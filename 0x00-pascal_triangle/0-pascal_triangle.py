@@ -1,3 +1,8 @@
+#!/usr/bin/python3
+"""
+0-main
+"""
+
 def pascal_triangle(n):
     """
     Generate Pascal's Triangle up to the nth row.
