@@ -1,0 +1,1 @@
+This folder conatains 0-pascal_triangle.py
