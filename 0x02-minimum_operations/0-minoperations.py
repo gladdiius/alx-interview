@@ -14,7 +14,6 @@ def min_operations(n):
            Returns 0 if 'n' is impossible to achieve.
     """
     operations = 0
-    
     divisor = 2
     
     while n > 1:
