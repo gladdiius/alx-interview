@@ -1,52 +1,39 @@
 #!/usr/bin/python3
-"""
-0-validate_utf8.py
-"""
+"""0-validate_utf8"""
 
 
 def validUTF8(data):
     """
-    Determine if a given data set represents a valid UTF-8 encoding.
+    Check if a given data set represents a valid UTF-8 encoding.
 
     Args:
-        data (list): A list of integers representing bytes of data.
+    data: A list of integers representing the data bytes
 
     Returns:
-        bool: True if data is a valid UTF-8 encoding, else False.
+    True if data is a valid UTF-8 encoding, else False
     """
-    
-    def is_start_byte(byte):
-        """ starting byte """
-        return (byte >> 6) == 0b00
-    
-    def is_continuation_byte(byte):
-        """ continuition byte"""
-        return (byte >> 6) == 0b10
-    
-    remaining_bytes = 0
-    
+
+    bytes_to_follow = 0
+
     for byte in data:
-        if remaining_bytes == 0:
-            if is_start_byte(byte):
-                if (byte >> 7) == 0:
-                    continue
-                elif (byte >> 5) == 0b110:
-                    remaining_bytes = 1
-                elif (byte >> 4) == 0b1110:
-                    remaining_bytes = 2
-                elif (byte >> 3) == 0b11110:
-                    remaining_bytes = 3
-                else:
-                    return False
+        if bytes_to_follow == 0:
+            if byte >> 7 == 0b0:
+                continue
+            elif byte >> 5 == 0b110:
+                bytes_to_follow = 1
+            elif byte >> 4 == 0b1110:
+                bytes_to_follow = 2
+            elif byte >> 3 == 0b11110:
+                bytes_to_follow = 3
             else:
                 return False
+
         else:
-            if is_continuation_byte(byte):
-                remaining_bytes -= 1
-            else:
+            if byte >> 6 != 0b10:
                 return False
-        
-            if remaining_bytes < 0:
-                return False
-        
-    return remaining_bytes == 0
+            bytes_to_follow -= 1
+
+        if bytes_to_follow > len(data) - 1 - data.index(byte):
+            return False
+
+    return bytes_to_follow == 0
