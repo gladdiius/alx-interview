@@ -1,8 +1,9 @@
 #!/usr/bin/python3
-import sys
 """
 0-nqueens
 """
+import sys
+
 
 
 def is_safe(board, row, col, n):
@@ -30,7 +31,6 @@ def is_safe(board, row, col, n):
     for i, j in zip(range(row, n, 1), range(col, -1, -1)):
         if board[i][j] == 1:
             return False
-
     return True
 
 def solve_n_queens_util(board, col, n, solutions):
