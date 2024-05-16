@@ -4,6 +4,7 @@ This module solves the N-Queens problem, determining all possible arrangements o
 """
 import sys
 
+
 def is_safe(board, row, col, n):
     """
     Check if it's safe to place a queen at position (row, col) on the board.
