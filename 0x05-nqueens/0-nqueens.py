@@ -4,6 +4,7 @@ import sys
     Check if it's safe to place a queen at position (row, col) on the board.
 """
 
+
 def is_safe(board, row, col, n):
     """
     Check if it's safe to place a queen at position (row, col) on the board.
