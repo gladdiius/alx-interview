@@ -1,14 +1,24 @@
 #!/usr/bin/python3
 import sys
 """
-    Check if it's safe to place a queen at position (row, col) on the board.
+0-nqueens
 """
 
 
 def is_safe(board, row, col, n):
     """
     Check if it's safe to place a queen at position (row, col) on the board.
+
+    Parameters:
+    - board: The current state of the chessboard.
+    - row: The row to check for queen safety.
+    - col: The column to check for queen safety.
+    - n: The size of the board.
+
+    Returns:
+    - True if it's safe to place a queen at the given position, False otherwise.
     """
+
     for i in range(col):
         if board[row][i] == 1:
             return False
@@ -23,11 +33,20 @@ def is_safe(board, row, col, n):
 
     return True
 
-
 def solve_n_queens_util(board, col, n, solutions):
     """
     Utility function to solve the N-Queens problem recursively.
+
+    Parameters:
+    - board: The current state of the chessboard.
+    - col: The current column being processed.
+    - n: The size of the board.
+    - solutions: List to store all valid solutions found.
+
+    Returns:
+    - True if a solution is found, False otherwise.
     """
+
     if col == n:
         solution = []
         for i in range(n):
@@ -38,6 +57,7 @@ def solve_n_queens_util(board, col, n, solutions):
         return True
 
     res = False
+
     for i in range(n):
         if is_safe(board, i, col, n):
             board[i][col] = 1
@@ -45,10 +65,17 @@ def solve_n_queens_util(board, col, n, solutions):
             board[i][col] = 0
     return res
 
-
 def solve_n_queens(n):
     """
     Main function to solve the N-Queens problem.
+
+    Parameters:
+    - n: Size of the board.
+
+    Validates input, creates the initial board, and calls the utility function to find solutions.
+    Prints out all valid solutions found in reverse order.
+
+    Note: Solutions are printed in reverse order from the last solution found to the first.
     """
     if not n.isdigit():
         print("N must be a number")
@@ -65,9 +92,8 @@ def solve_n_queens(n):
 
     solve_n_queens_util(board, 0, n, solutions)
 
-    for sol in solutions:
+    for sol in reversed(solutions):
         print(sol)
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
