@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-import sys
 """
     Check if it's safe to place a queen at position (row, col) on the board.
 """
+import sys
 
 
 def is_safe(board, row, col, n):
