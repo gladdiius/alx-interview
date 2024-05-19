@@ -1,5 +1,7 @@
 #!/usr/bin/python3
+""" n-queens """
 import sys
+
 
 def is_safe(board, row, col):
     """
