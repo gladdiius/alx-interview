@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys
 
+
 def is_safe(board, row, col):
     """Check if it's safe to place a queen at board[row][col]."""
     # Check this row on the left side
@@ -64,6 +65,7 @@ def main():
         sys.exit(1)
 
     solutions = solve_nqueens(n)
+    solutions.reverse()
     for solution in solutions:
         print(solution)
 
