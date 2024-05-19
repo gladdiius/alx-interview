@@ -4,17 +4,14 @@ import sys
 
 def is_safe(board, row, col):
     """Check if it's safe to place a queen at board[row][col]."""
-    # Check this row on the left side
     for i in range(col):
         if board[row][i] == 1:
             return False
 
-    # Check upper diagonal on the left side
     for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
         if board[i][j] == 1:
             return False
 
-    # Check lower diagonal on the left side
     for i, j in zip(range(row, len(board), 1), range(col, -1, -1)):
         if board[i][j] == 1:
             return False
@@ -69,3 +66,5 @@ def main():
     for solution in solutions:
         print(solution)
 
+if __name__ == "__main__":
+    main()
