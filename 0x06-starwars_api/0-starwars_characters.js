@@ -1,4 +1,5 @@
 #!/usr/bin/node
+# get characters from api
 
 get_movie_data() {
   movie_id=$1
