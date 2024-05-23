@@ -19,9 +19,10 @@ request(apiUrl, (error, response, body) => {
   } else {
     const filmData = JSON.parse(body);
     const characters = filmData.characters;
+    let count = 0;
 
-    characters.forEach((characterUrl) => {
-      request(characterUrl, (charError, charResponse, charBody) => {
+    const fetchCharacter = (url) => {
+      request(url, (charError, charResponse, charBody) => {
         if (charError) {
           console.error('Error fetching character data:', charError);
         } else if (charResponse.statusCode !== 200) {
@@ -29,8 +30,15 @@ request(apiUrl, (error, response, body) => {
         } else {
           const characterData = JSON.parse(charBody);
           console.log(characterData.name);
+          count++;
+
+          if (count < characters.length) {
+            fetchCharacter(characters[count]);
+          }
         }
       });
-    });
+    };
+
+    fetchCharacter(characters[count]);
   }
 });
