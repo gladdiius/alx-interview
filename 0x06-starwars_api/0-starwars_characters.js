@@ -1,32 +1,36 @@
-#!/usr/bin/node
+// 0-starwars_characters.js
 
-get_movie_data() {
-  movie_id=$1
-  response=$(curl -s "https://swapi.dev/api/films/$movie_id/")
-  if [[ $(echo "$response" | jq -r '.detail') == "Not found" ]]; then
-    echo "Error: Movie ID $movie_id not found."
-    exit 1
-  else
-    echo "$response"
-  fi
+const request = require('request');
+
+const movieId = process.argv[2];
+
+if (!movieId) {
+  console.log('Please provide a Movie ID as the first argument.');
+  process.exit(1);
 }
 
-get_character_name() {
-  character_url=$1
-  response=$(curl -s "$character_url")
-  character_name=$(echo "$response" | jq -r '.name')
-  echo "$character_name"
-}
+const apiUrl = `https://swapi.dev/api/films/${movieId}/`;
 
-if [[ $# -ne 1 ]]; then
-  echo "Usage: $0 <Movie ID>"
-  exit 1
-fi
+request(apiUrl, (error, response, body) => {
+  if (error) {
+    console.error('Error:', error);
+  } else if (response.statusCode !== 200) {
+    console.error('Status Code:', response.statusCode);
+  } else {
+    const filmData = JSON.parse(body);
+    const characters = filmData.characters;
 
-movie_id=$1
-movie_data=$(get_movie_data "$movie_id")
-character_urls=$(echo "$movie_data" | jq -r '.characters[]')
-
-for url in $character_urls; do
-  get_character_name "$url"
-done
+    characters.forEach((characterUrl) => {
+      request(characterUrl, (charError, charResponse, charBody) => {
+        if (charError) {
+          console.error('Error fetching character data:', charError);
+        } else if (charResponse.statusCode !== 200) {
+          console.error('Error fetching character data. Status Code:', charResponse.statusCode);
+        } else {
+          const characterData = JSON.parse(charBody);
+          console.log(characterData.name);
+        }
+      });
+    });
+  }
+});
