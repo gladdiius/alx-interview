@@ -18,11 +18,11 @@ def makeChange(coins, total):
     if total <= 0:
         return 0
     
-    # Initialize the dp array with infinity values
+    # Initialize the dp array with a large number (infinity)
     dp = [float('inf')] * (total + 1)
     dp[0] = 0  # Base case: zero coins to make total of 0
-    
-    # Populate the dp array
+
+    # Populate the dp array using the coin values
     for coin in coins:
         for j in range(coin, total + 1):
             dp[j] = min(dp[j], dp[j - coin] + 1)
