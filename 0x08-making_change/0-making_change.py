@@ -2,9 +2,6 @@
 """0-makingchange"""
 
 
-#!/usr/bin/python3
-"""0-makingchange"""
-
 def makeChange(coins, total):
     """
     Determine the fewest number of coins needed to meet a given total amount.
@@ -21,7 +18,6 @@ def makeChange(coins, total):
     if total <= 0:
         return 0
 
-    # Sort the coins in descending order
     coins.sort(reverse=True)
     
     num_coins = 0
@@ -32,5 +28,5 @@ def makeChange(coins, total):
             total -= count * coin
     
     if total != 0:
-        return -1  # If total cannot be met by any combination of coins
+        return -1
     return num_coins
