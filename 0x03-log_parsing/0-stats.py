@@ -1,43 +1,64 @@
 #!/usr/bin/python3
-import sys
-from collections import defaultdict
 
-def process_input():
+import sys
+
+
+def print_statistics(total_size, status_counts):
     """
-    Read input line by line, compute metrics, and print statistics.
+    Print statistics based on accumulated data.
+
+    Args:
+        total_size (int): Total accumulated file size.
+        status_counts (dict): Dictionary mapping status codes to their counts.
+    """
+    print(f"File size: {total_size}")
+    sorted_status_codes = sorted(status_counts.keys())
+    for code in sorted_status_codes:
+        if status_counts[code] > 0:
+            print(f"{code}: {status_counts[code]}")
+
+
+def main():
+    """
+    Main function to read stdin, compute metrics, and print statistics.
     """
     total_size = 0
-    status_code_counts = defaultdict(int)
+    status_counts = {
+        200: 0,
+        301: 0,
+        400: 0,
+        401: 0,
+        403: 0,
+        404: 0,
+        405: 0,
+        500: 0
+    }
     line_count = 0
 
     try:
         for line in sys.stdin:
             line_count += 1
+            if line_count > 10:
+                print_statistics(total_size, status_counts)
+                line_count = 1
+
+            line = line.strip()
             parts = line.split()
+            if len(parts) != 7:
+                continue
 
-            # Check if line matches the expected format
-            if len(parts) == 7 and parts[3].isdigit() and parts[-1].isdigit():
-                status_code = int(parts[5])
-                file_size = int(parts[6])
+            status_code = int(parts[-2])
+            file_size = int(parts[-1])
 
-                # Update total file size
-                total_size += file_size
-
-                # Update status code counts
-                status_code_counts[status_code] += 1
-
-                # Print statistics after every 10 lines
-                if line_count % 10 == 0:
-                    print(f"Total file size: {total_size}")
-                    for code in sorted(status_code_counts.keys()):
-                        if code in [200, 301, 400, 401, 403, 404, 405, 500]:
-                            print(f"{code}: {status_code_counts[code]}")
+            if status_code in status_counts:
+                status_counts[status_code] += 1
+            total_size += file_size
 
     except KeyboardInterrupt:
-        print(f"Total file size: {total_size}")
-        for code in sorted(status_code_counts.keys()):
-            if code in [200, 301, 400, 401, 403, 404, 405, 500]:
-                print(f"{code}: {status_code_counts[code]}")
+        pass
+
+    print_statistics(total_size, status_counts)
+
 
 if __name__ == "__main__":
-    process_input()
+    main()
