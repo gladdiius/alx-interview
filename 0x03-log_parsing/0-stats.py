@@ -1,72 +1,64 @@
 #!/usr/bin/python3
-"""
-Script that reads stdin line by line, parses log data, and computes metrics.
+"""Parses log data from standard input, calculates metrics, and prints them
+every 10 lines or on keyboard interrupt.
 
-Input format expected:
+This script expects log lines in the following format:
+
 <IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
+
+Lines that don't match this format are skipped.
+
+The script calculates the following metrics:
+
+* Total file size: Sum of all file sizes encountered.
+* Number of lines by status code: Counts occurrences of each unique status code.
+
+The script prints these metrics every 10 lines read from standard input or
+upon receiving a keyboard interrupt (CTRL+C).
 """
 
+from collections import Counter
 import sys
 
-status_codes = {
-    "200": 0,
-    "301": 0,
-    "400": 0,
-    "401": 0,
-    "403": 0,
-    "404": 0,
-    "405": 0,
-    "500": 0
-}
 
-total_file_size = 0 
-line_count = 0
+def main():
+    """Main function that parses log data and prints metrics."""
+    total_size = 0
+    status_counts = Counter()
+    line_count = 0
 
-def parse_line(line):
-    """
-    Parse a line of log data and update status code counts.
+    def print_stats():
+        """Prints the calculated metrics."""
+        global total_size, status_counts
+        print(f"Total file size: {total_size}")
+        for code, count in sorted(status_counts.items()):
+            print(f"{code}: {count}")
 
-    Args:
-        line (str): A line of log data in the expected format.
-
-    Returns:
-        int: File size parsed from the log line, or 0 if the line is invalid.
-    """
     try:
-        _, _, _, _, _, status_code, file_size = line.split()
-        status_code = status_code.strip('"')
-        file_size = int(file_size)
+        for line in sys.stdin:
+            line_count += 1
+            # Check if the line matches the expected format
+            if not line.strip():
+                continue  # Skip empty lines
+            parts = line.split()
+            if len(parts) < 7 or not parts[2].startswith("GET") or not parts[5].isdigit() or not parts[6].isdigit():
+                continue  # Skip lines with invalid format
 
-        if status_code in status_codes:
-            status_codes[status_code] += 1
+            # Extract file size
+            file_size = int(parts[6])
+            total_size += file_size
+            status_counts[int(parts[4])] += 1  # Increment count for status code
 
-        return file_size
-    except ValueError:
-        return 0
+            # Print stats every 10 lines or on keyboard interrupt
+            if line_count % 10 == 0 or line_count == 1:
+                print_stats()
+                line_count = 0  # Reset line count
+                status_counts = Counter()  # Reset status counts
 
+    except KeyboardInterrupt:
+        print_stats()
+        print("\nExiting due to keyboard interrupt.")
 
-def print_stats():
-    """
-    Print accumulated statistics in ascending order of status codes.
-    """
-    print(f"File size: {total_file_size}")
-    for code in sorted(status_codes.keys()):
-        if status_codes[code]:
-            print(f"{code}: {status_codes[code]}")
-
-
-try:
-    for line in sys.stdin:
-        file_size = parse_line(line)
-        total_file_size += file_size
-        line_count += 1
-
-        if line_count % 10 == 0:
-            print_stats()
-
-except KeyboardInterrupt:
-    print_stats()
-    raise
 
 if __name__ == "__main__":
-    print_stats()
+    main()
