@@ -2,7 +2,6 @@
 """updated"""
 import sys
 
-
 def print_statistics(total_size, status_counts):
     """
     Print statistics based on accumulated data.
@@ -17,11 +16,7 @@ def print_statistics(total_size, status_counts):
         if status_counts[code] > 0:
             print(f"{code}: {status_counts[code]}")
 
-
 def main():
-    """
-    Main function to read stdin, compute metrics, and print statistics.
-    """
     total_size = 0
     status_counts = {
         200: 0,
@@ -39,6 +34,10 @@ def main():
         for line in sys.stdin:
             line_count += 1
 
+            if line_count > 10:
+                print_statistics(total_size, status_counts)
+                line_count = 1
+
             line = line.strip()
             parts = line.split()
             if len(parts) != 7:
@@ -51,15 +50,10 @@ def main():
                 status_counts[status_code] += 1
             total_size += file_size
 
-            if line_count % 10 == 0:
-                print_statistics(total_size, status_counts)
-                total_size = 0
-                status_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
-
     except KeyboardInterrupt:
-        # If interrupted, print current statistics before exiting
-        print_statistics(total_size, status_counts)
+        pass
 
+    print_statistics(total_size, status_counts)
 
 if __name__ == "__main__":
     main()
