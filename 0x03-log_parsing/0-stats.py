@@ -8,20 +8,16 @@ def print_statistics(total_size, status_counts):
     Print statistics based on accumulated data.
 
     Args:
-        total_size (int): Total accumulated file size.
-        status_counts (dict): Dictionary mapping status codes to their counts.
+    total_size (int): Total accumulated file size.
+    status_counts (dict): Dictionary mapping status codes to their counts.
     """
-    print(f"File size: {total_size}")
+    print(f"Total file size: {total_size}")
     sorted_status_codes = sorted(status_counts.keys())
     for code in sorted_status_codes:
         if status_counts[code] > 0:
             print(f"{code}: {status_counts[code]}")
 
-
 def main():
-    """
-    Main function to read stdin, compute metrics, and print statistics.
-    """
     total_size = 0
     status_counts = {
         200: 0,
@@ -38,6 +34,7 @@ def main():
     try:
         for line in sys.stdin:
             line_count += 1
+
             if line_count > 10:
                 print_statistics(total_size, status_counts)
                 line_count = 1
@@ -58,7 +55,6 @@ def main():
         pass
 
     print_statistics(total_size, status_counts)
-
 
 if __name__ == "__main__":
     main()
