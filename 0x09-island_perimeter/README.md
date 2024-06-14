@@ -1,0 +1,1 @@
+This folder contains all the soluitions for island project
