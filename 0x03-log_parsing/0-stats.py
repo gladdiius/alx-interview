@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""print statistics"""
+"""updated"""
 import sys
 
 
@@ -38,11 +38,6 @@ def main():
     try:
         for line in sys.stdin:
             line_count += 1
-            if line_count > 10:
-                print_statistics(total_size, status_counts)
-                line_count = 1
-                total_size = 0
-                status_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
             line = line.strip()
             parts = line.split()
@@ -56,8 +51,10 @@ def main():
                 status_counts[status_code] += 1
             total_size += file_size
 
-        # Final print after last batch of lines
-        print_statistics(total_size, status_counts)
+            if line_count % 10 == 0:
+                print_statistics(total_size, status_counts)
+                total_size = 0
+                status_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
     except KeyboardInterrupt:
         # If interrupted, print current statistics before exiting
