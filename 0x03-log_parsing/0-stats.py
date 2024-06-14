@@ -41,6 +41,8 @@ def main():
             if line_count > 10:
                 print_statistics(total_size, status_counts)
                 line_count = 1
+                total_size = 0
+                status_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
             line = line.strip()
             parts = line.split()
@@ -54,10 +56,12 @@ def main():
                 status_counts[status_code] += 1
             total_size += file_size
 
-    except KeyboardInterrupt:
-        pass
+        # Final print after last batch of lines
+        print_statistics(total_size, status_counts)
 
-    print_statistics(total_size, status_counts)
+    except KeyboardInterrupt:
+        # If interrupted, print current statistics before exiting
+        print_statistics(total_size, status_counts)
 
 
 if __name__ == "__main__":
