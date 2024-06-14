@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Parses log data from standard input, calculates metrics, and prints them
 every 10 lines or on keyboard interrupt.
 
